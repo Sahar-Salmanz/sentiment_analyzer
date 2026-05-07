@@ -4,7 +4,7 @@
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A production-structured NLP project for **multi-model sentiment analysis** with attention-based explainability. Compare three transformer models side-by-side, run batch inference on CSV datasets, and visualize what each model pays attention to — all through a clean Gradio web interface.
+A production-structured NLP project for **multi-model sentiment analysis** with attention-based explainability. Compare three transformer models side-by-side, run batch inference on CSV datasets, and visualize what each model pays attention to, all through a clean Gradio web interface.
 
 ---
 
@@ -25,8 +25,8 @@ A production-structured NLP project for **multi-model sentiment analysis** with 
 ## 🏗️ Project Structure
 
 ```
-nlp-sentiment-suite/
-├── src/sentiment/
+sentiment_analyzer/
+├── src
 │   ├── models.py        # Model loader, SentimentModel class, PredictionResult dataclass
 │   ├── pipeline.py      # SentimentPipeline — multi-model orchestration
 │   ├── explainer.py     # AttentionExplainer + ShapExplainer
@@ -35,10 +35,9 @@ nlp-sentiment-suite/
 │   └── gradio_app.py    # Interactive Gradio web demo
 ├── tests/
 │   └── test_pipeline.py # Unit + mocked integration tests
-├── data/
-│   └── sample_reviews.csv
-└── .github/workflows/
-    └── ci.yml
+│   └── test_models.py
+└── data/
+    └── sample_reviews.csv
 ```
 
 ---
@@ -48,14 +47,10 @@ nlp-sentiment-suite/
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/your-username/nlp-sentiment-suite.git
-cd nlp-sentiment-suite
-
-python -m venv .venv
-source .venv/bin/activate      # Windows: .venv\Scripts\activate
+git https://github.com/Sahar-Salmanz/sentiment_analyzer.git
+cd sentiment_analyzer
 
 pip install -r requirements.txt
-pip install -e .               # Install as editable package
 ```
 
 ### 2. Run the Gradio web app
