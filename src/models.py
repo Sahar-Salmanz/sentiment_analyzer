@@ -52,7 +52,7 @@ class SentimentModel:
     def __init__(self, model_key: str, device: Optional[str] = None):
         if model_key not in MODEL_REGISTRY:
             raise ValueError(
-                f"Unknow model key '{model_key}'. Available: {list(MODEL_REGISTRY.keys())}"
+                f"Unknown model key '{model_key}'. Available: {list(MODEL_REGISTRY.keys())}"
             )
         
         self.model_key = model_key
@@ -77,13 +77,21 @@ class SentimentModel:
         """Run inference on a single text string."""
         start = time.perf_counter()
 
+        # inputs = self.tokenizer(
+        #     text, 
+        #     return_tensors="pt",
+        #     truncation=True,
+        #     max_length= max_length,
+        #     padding=True,
+        # ).to(self.device)
         inputs = self.tokenizer(
-            text, 
+            text,
             return_tensors="pt",
             truncation=True,
-            max_length= max_length,
+            max_length=max_length,
             padding=True,
-        ).to(self.device)
+        )
+        inputs = {k: v.to(self.device) for k, v in inputs.items()}
 
         tokens = self.tokenizer.convert_ids_to_tokens(inputs["input_ids"][0])
 

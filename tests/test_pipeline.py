@@ -1,7 +1,7 @@
 """
 Unit tests for the inference pipeline.
 
-Run with: pytest tests/ -v
+Run with: pytest tests/test_pipeline.py -v
 """
 
 import pytest
@@ -10,7 +10,6 @@ from unittest.mock import patch, MagicMock
 
 
 # Fixtures
-
 @pytest.fixture
 def mock_prediction():
     from src.models import PredictionResult
@@ -27,7 +26,6 @@ def mock_prediction():
 
 
 # Unit tests: PredictionResult
-
 def test_prediction_result_fields(mock_prediction):
     assert mock_prediction.label == "POSITIVE"
     assert mock_prediction.confidence == 0.98
@@ -42,7 +40,6 @@ def test_prediction_confidence_sum(mock_prediction):
 
 
 # Unit tests: utils
-
 def test_clean_text_strips_whitespace():
     from src.utils import clean_text
     assert clean_text("  hello world  ") == "hello world"
@@ -78,8 +75,7 @@ def test_results_to_dataframe(mock_prediction):
     assert df.iloc[0]["label"] == "POSITIVE"
 
 
-# ── Unit tests: MODEL_REGISTRY ────────────────────────────────────────────────
-
+# Unit tests: MODEL_REGISTRY
 def test_model_registry_keys():
     from src.models import MODEL_REGISTRY
     assert "distilbert" in MODEL_REGISTRY
@@ -102,7 +98,6 @@ def test_invalid_model_key_raises():
 
 
 # Integration-style test (mocked, no actual model download)
-
 def test_pipeline_compare_returns_dataframe():
     """
     Mocked integration test — verifies SentimentPipeline.compare() returns
@@ -119,7 +114,7 @@ def test_pipeline_compare_returns_dataframe():
         latency_ms=30.0,
     )
 
-    with patch("src.sentiment.pipeline.SentimentModel") as MockModel:
+    with patch("src.models.SentimentModel") as MockModel:
         instance = MockModel.return_value
         instance.predict.return_value = mock_result
 
