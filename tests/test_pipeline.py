@@ -1,5 +1,5 @@
 """
-test_pipeline.py — Unit tests for the inference pipeline.
+Unit tests for the inference pipeline.
 
 Run with: pytest tests/ -v
 """
@@ -9,11 +9,11 @@ import pandas as pd
 from unittest.mock import patch, MagicMock
 
 
-# ── Fixtures ───────────────────────────────────────────────────────────────────
+# Fixtures
 
 @pytest.fixture
 def mock_prediction():
-    from src.sentiment.models import PredictionResult
+    from src.models import PredictionResult
     return PredictionResult(
         model_name="distilbert",
         text="This is great!",
@@ -26,7 +26,7 @@ def mock_prediction():
     )
 
 
-# ── Unit tests: PredictionResult ──────────────────────────────────────────────
+# Unit tests: PredictionResult
 
 def test_prediction_result_fields(mock_prediction):
     assert mock_prediction.label == "POSITIVE"
@@ -41,22 +41,22 @@ def test_prediction_confidence_sum(mock_prediction):
     assert abs(total - 1.0) < 1e-4, f"Probabilities should sum to ~1.0, got {total}"
 
 
-# ── Unit tests: utils ─────────────────────────────────────────────────────────
+# Unit tests: utils
 
 def test_clean_text_strips_whitespace():
-    from src.sentiment.utils import clean_text
+    from src.utils import clean_text
     assert clean_text("  hello world  ") == "hello world"
 
 
 def test_clean_text_removes_urls():
-    from src.sentiment.utils import clean_text
+    from src.utils import clean_text
     result = clean_text("Visit https://example.com for details")
     assert "https" not in result
     assert "example.com" not in result
 
 
 def test_clean_text_removes_html():
-    from src.sentiment.utils import clean_text
+    from src.utils import clean_text
     result = clean_text("<b>Bold text</b> and <i>italic</i>")
     assert "<b>" not in result
     assert "<i>" not in result
@@ -64,13 +64,13 @@ def test_clean_text_removes_html():
 
 
 def test_clean_text_collapses_spaces():
-    from src.sentiment.utils import clean_text
+    from src.utils import clean_text
     result = clean_text("too   many     spaces")
     assert "  " not in result
 
 
 def test_results_to_dataframe(mock_prediction):
-    from src.sentiment.utils import results_to_dataframe
+    from src.utils import results_to_dataframe
     df = results_to_dataframe([mock_prediction])
     assert isinstance(df, pd.DataFrame)
     assert "label" in df.columns
@@ -81,14 +81,14 @@ def test_results_to_dataframe(mock_prediction):
 # ── Unit tests: MODEL_REGISTRY ────────────────────────────────────────────────
 
 def test_model_registry_keys():
-    from src.sentiment.models import MODEL_REGISTRY
+    from src.models import MODEL_REGISTRY
     assert "distilbert" in MODEL_REGISTRY
     assert "roberta-twitter" in MODEL_REGISTRY
     assert "finbert" in MODEL_REGISTRY
 
 
 def test_model_registry_structure():
-    from src.sentiment.models import MODEL_REGISTRY
+    from src.models import MODEL_REGISTRY
     for key, config in MODEL_REGISTRY.items():
         assert "model_id" in config, f"Missing 'model_id' in {key}"
         assert "labels" in config, f"Missing 'labels' in {key}"
@@ -96,19 +96,19 @@ def test_model_registry_structure():
 
 
 def test_invalid_model_key_raises():
-    from src.sentiment.models import SentimentModel
+    from src.models import SentimentModel
     with pytest.raises(ValueError, match="Unknown model key"):
         SentimentModel("nonexistent-model")
 
 
-# ── Integration-style test (mocked, no actual model download) ─────────────────
+# Integration-style test (mocked, no actual model download)
 
 def test_pipeline_compare_returns_dataframe():
     """
     Mocked integration test — verifies SentimentPipeline.compare() returns
     a DataFrame without actually loading transformer models.
     """
-    from src.sentiment.models import PredictionResult
+    from src.models import PredictionResult
 
     mock_result = PredictionResult(
         model_name="distilbert",
@@ -123,7 +123,7 @@ def test_pipeline_compare_returns_dataframe():
         instance = MockModel.return_value
         instance.predict.return_value = mock_result
 
-        from src.sentiment.pipeline import SentimentPipeline
+        from src.pipeline import SentimentPipeline
         pipeline = SentimentPipeline.__new__(SentimentPipeline)
         pipeline.models = {"distilbert": instance}
 

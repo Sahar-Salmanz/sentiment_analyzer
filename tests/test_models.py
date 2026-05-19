@@ -39,4 +39,4 @@ def make_mock_model_output(num_labels: int = 2, seq_len: int = 6, num_heads: int
     logits = torch.zeros(1, num_labels)
     logits[0, 1] = 3.0 # push class 1 to be predicted 
 
-    fake_attn = torch.rand(1, num_heads, seq_len, seg_len)
+    fake_attn = torch.rand(1, num_heads, seq_len, seq_len)

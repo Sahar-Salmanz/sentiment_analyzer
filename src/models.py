@@ -16,7 +16,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 MODEL_REGISTRY = {
     "distilbert": {
         "model_id": "distilbert-base-uncased-finetuned-sst-2-english",
-        "lables": {0: "NEGATIVE", 1: "POSITIVE"},
+        "labels": {0: "NEGATIVE", 1: "POSITIVE"},
         "description": "DistilBERT fine-tuned on SST-2 (general sentiment)",
     }, 
     "roberta-twitter": {
@@ -39,8 +39,8 @@ class PredictionResult:
     text: str
     label: str
     confidence: float
-    latency_ms = float
-    all_scores = dict
+    latency_ms: float
+    all_scores: dict
     tokens: list = field(default_factory=list) # ensure every instance gets its own copy
     attention: Optional[torch.Tensor] = None
 
@@ -61,7 +61,7 @@ class SentimentModel:
         self.label_map = config["labels"]
         self.description = config["description"]
 
-        self.device = device or ["cuda" if torch.cuda.is_available() else "cpu"]
+        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
 
         print(f"Loading {model_key} from '{self.model_id}' on {self.device}...")
 
@@ -85,7 +85,7 @@ class SentimentModel:
             padding=True,
         ).to(self.device)
 
-        tokens = self.tokenizer.convert_ids_to_tokens(inputs["input_id"][0])
+        tokens = self.tokenizer.convert_ids_to_tokens(inputs["input_ids"][0])
 
         with torch.no_grad():
             outputs = self.model(**inputs) # goes to the forwad call method defined in AutoModelForSequenceClassification
