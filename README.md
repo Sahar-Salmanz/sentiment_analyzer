@@ -1,6 +1,5 @@
 # 🧠 NLP Sentiment Analysis Suite
 
-[![CI](https://github.com/your-username/nlp-sentiment-suite/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/nlp-sentiment-suite/actions)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -18,7 +17,6 @@ A production-structured NLP project for **multi-model sentiment analysis** with 
 | **Batch inference** | Upload a CSV and annotate every row with predictions + confidence |
 | **Gradio web UI** | Interactive demo with model comparison table and attention plots |
 | **Benchmarking** | Evaluate any model against ground-truth labels (precision/recall/F1) |
-| **CI pipeline** | GitHub Actions runs pytest on every push |
 
 ---
 
@@ -26,15 +24,21 @@ A production-structured NLP project for **multi-model sentiment analysis** with 
 
 ```
 sentiment_analyzer/
+├── README.md
+├── requirements.txt
+├── setup.py
+├── conftest.py           # Empty file, just needs to exist
 ├── src
-│   ├── models.py        # Model loader, SentimentModel class, PredictionResult dataclass
-│   ├── pipeline.py      # SentimentPipeline — multi-model orchestration
-│   ├── explainer.py     # AttentionExplainer + ShapExplainer
-│   └── utils.py         # Text cleaning, CSV loading, results formatting
+│   ├── models.py         # Model loader, SentimentModel class, PredictionResult dataclass
+│   ├── pipeline.py       # SentimentPipeline, multi-model orchestration
+│   ├── explainer.py      # AttentionExplainer + ShapExplainer
+│   └── utils.py          # Text cleaning, CSV loading, results formatting
 ├── app/
-│   └── gradio_app.py    # Interactive Gradio web demo
+│   └── gradio_app.py     # Interactive Gradio web demo
+├── notebooks/
+│   └── exploration.ipynb # EDA + model comparison
 ├── tests/
-│   └── test_pipeline.py # Unit + mocked integration tests
+│   └── test_pipeline.py  # Unit + mocked integration tests
 │   └── test_models.py
 └── data/
     └── sample_reviews.csv
@@ -88,7 +92,8 @@ fig.savefig("attention_map.png", dpi=150, bbox_inches="tight")
 ### 4. Run tests
 
 ```bash
-pytest tests/ -v
+pytest tests/test_models.py -v
+pytest tests/test_pipeline.py -v
 ```
 
 ---
@@ -157,16 +162,6 @@ print(report)
 
 ---
 
-## 🧪 Running Tests
-
-```bash
-pytest tests/ -v --tb=short
-```
-
-Tests use `unittest.mock` to patch model loading — no actual downloads required during CI.
-
----
-
 ## 🛠️ Tech Stack
 
 - [PyTorch](https://pytorch.org/) — tensor operations and model inference
@@ -175,7 +170,6 @@ Tests use `unittest.mock` to patch model loading — no actual downloads require
 - [SHAP](https://shap.readthedocs.io/) — model explainability
 - [Gradio](https://gradio.app/) — interactive web demo
 - [scikit-learn](https://scikit-learn.org/) — evaluation metrics
-- [GitHub Actions](https://docs.github.com/en/actions) — CI/CD
 
 ---
 
